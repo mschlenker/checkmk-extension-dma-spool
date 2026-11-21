@@ -6,7 +6,13 @@
 # If the default exists, use it
 
 spooldir=''
-[ -d /var/spool/dma ] && spooldir='/var/spool/dma'
+bindirs="/usr/sbin /usr/local/sbin /usr/libexec"
+for  d in $bindirs ; do
+    if [ -x "${d}/dma" ] ; then
+        [ -d /var/local/spool/dma ] && spooldir='/var/local/spool/dma'
+        [ -d /var/spool/dma ] && spooldir='/var/spool/dma'
+    fi
+done
 
 # If the spooldir is overwritten via /etc/dma.conf or /usr/local/etc/dma/dma.conf use that instead:
 
@@ -24,14 +30,27 @@ fi
 # If the spooldir has not been found, exit.
 [ -z "$spooldir" ] && exit 0
 
-spoolsize=`du -b -s "$spooldir" | awk '{print $1}'`
-spoolcount=`find "$spooldir" -type f -name 'M*.*' | wc -l`
-# Do not use globbing to keep the command line short!
+# Getting funny... Let's find out where we are working on...
+os=`uname`
+
+spoolsize=`du -k -s "$spooldir" | awk '{print $1}'`
+spoolsize=$(( $spoolsize * 1024 ))
+spoolcount=`find "$spooldir" -type f -name 'Q*.*' | wc -l`
 spoololdest="-1"
-toldest=`ls --time-style='+%s' -tlr "$spooldir" | grep 'Q' | awk '{print $6}'`
-[ -n "$toldest" ] && spoololdest="$toldest"
 flushmtime="-1"
-[ -f "$spooldir/flush" ] && flushmtime=`ls --time-style='+%s' -tlr "$spooldir/flush" | awk '{print $6}'`
+# Do not use globbing to keep the command line short!
+spoololdestfile=`ls -tr "$spooldir" | grep '^Q' | tail -n 1`
+
+case $os in
+    Linux)
+        [ -n "$spoololdestfile" ] && spoololdest=`stat -c %Y "${spooldir}/${spoololdestfile}"`
+        [ -f "${spooldir}/flush" ] && flushmtime=`stat -c %Y "${spooldir}/flush"`
+    ;;
+    *BSD|DragonFly)
+        [ -n "$spoololdestfile" ] && spoololdest=`stat -f %m "${spooldir}/${spoololdestfile}"`
+        [ -f "${spooldir}/flush" ] && flushmtime=`stat -f %m "${spooldir}/flush"`
+    ;;
+esac
 
 echo '<<<dma_spool>>>'
 echo "spooldir $spooldir"
@@ -39,4 +58,3 @@ echo "spoolsize $spoolsize"
 echo "spoolcount $spoolcount"
 echo "spoololdest $spoololdest"
 echo "flushmtime $flushmtime"
-

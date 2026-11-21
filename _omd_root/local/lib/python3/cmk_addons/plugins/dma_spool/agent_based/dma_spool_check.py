@@ -23,14 +23,16 @@ def check_dma_spool(params, section):
     # Metrics for occupied space etc.
     yield from check_levels(
         section["spoolcount"],
-        levels_upper=params["length"],
+        levels_upper = params["length"],
         metric_name = "mail_queue_deferred_length",
+        label = "Mail queue length",
         notice_only = True,
     )
     yield from check_levels(
         section["spoolsize"],
-        levels_upper=params["size"],
+        levels_upper = params["size"],
         metric_name = "mail_queue_deferred_size",
+        label = "Mail queue size",
         notice_only = True,
     )
     if section["spoolcount"] > 0:
@@ -39,7 +41,8 @@ def check_dma_spool(params, section):
             s_age,
             levels_upper = params["age_spool"],
             metric_name = "age_oldest_spool",
-            render_func=render.timespan,
+            label = "Age of oldest spool file",
+            render_func = render.timespan,
             notice_only = True,
         )
     if section["flushmtime"] > 0:
@@ -48,7 +51,8 @@ def check_dma_spool(params, section):
             f_age,
             levels_upper = params["age_flush"],
             metric_name = "age_flush",
-            render_func=render.timespan,
+            label = "Age of flush marker",
+            render_func = render.timespan,
             notice_only = True,
         )
         
