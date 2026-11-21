@@ -60,7 +60,7 @@ def parameter_form_dma_queue():
         },
     )
     
-rule_spec_watterott_co2_special_co2 = CheckParameters(
+rule_spec_dma_queue = CheckParameters(
     name = "dma_spool",
     title = Title("Dragonfly Mail Agent spool directory"),
     topic = Topic.ENVIRONMENTAL,

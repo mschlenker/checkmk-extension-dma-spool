@@ -56,12 +56,12 @@ def check_dma_spool(params, section):
             notice_only = True,
         )
         
-agent_section_myhostgroups = AgentSection(
+agent_section_dma_spool = AgentSection(
     name = "dma_spool",
     parse_function = parse_dma_spool,
 )
 
-check_plugin_myhostgroups = CheckPlugin(
+check_plugin_dma_spool = CheckPlugin(
     name = "dma_spool",
     service_name = "Dragonfly Mail Agent spool",
     discovery_function = discover_dma_spool,
