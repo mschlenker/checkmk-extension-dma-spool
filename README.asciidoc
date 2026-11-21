@@ -4,8 +4,7 @@
 The Dragonfly BSD project does things differently.
 This also applies to mail handling.
 The link:https://docs.freebsd.org/en/books/handbook/mail/[Dragonfly Mail Agent (`dma`)] is a minimal mailer that does not listen on a port.
-It just emulates the `sendmail` command and immediately tries to deliver the mails.
-Mails are delivered immediately.
+It just emulates the `sendmail` command and immediately tries to deliver the mail just handed over.
 If delivery fails, mails are queued.
 The queue has to be flushed via cron.
 
@@ -18,6 +17,8 @@ It checks:
 * Age of the oldest queued file
 * Age of the flush marker
 
-To use, install `~/local/lib/python3/cmk_addons/plugins/dma_spool/agent/dma_spool` to your agents plugins directory.
+Install the package link:https://docs.checkmk.com/latest/en/mkps.html[as described in the User Guide].
+Then install `~/local/lib/python3/cmk_addons/plugins/dma_spool/agent/dma_spool` to your agents plugins directory.
+If you want to develop, just sync the `_omd_root` directory over your site home.
 
 Read xref:./osmc2026/Ignite_talk_OSMC_2026_DragonflyMailAgent.pdf[the slides] for my link:https://osmc.de/talks/ignite-dragonfly-mail-agent-the-minimal-mail-transport-agent-monitoring-admins-love/[ignite talk at OSMC 2026].
