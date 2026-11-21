@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# (c) Mattias Schlenker - License GPL v2
+
+# First try to get the spool directory:
+# If the default exists, use it
+
+spooldir=''
+[ -d /var/spool/dma ] && spooldir='/var/spool/dma'
+
+# If the spooldir is overwritten via /etc/dma.conf or /usr/local/etc/dma/dma.conf use that instead:
+
+for f in /etc/dma/dma.conf /usr/local/etc/dma/dma.conf ; do
+    if [ -f "$f" ] ; then
+	tspool=`grep '^SPOOLDIR ' "$f" | awk '{print $2}'`
+        [ -n "$tspool" -a -d "$tspool" ] && spooldir="$tspool"
+    fi
+done
+
+if [ -f "$MK_CONFDIR/dma.cfg" -a -x "$MK_CONFDIR/dma.cfg" ] ; then
+    . "$MK_CONFDIR/dma.cfg"
+fi
+
+# If the spooldir has not been found, exit.
+[ -z "$spooldir" ] && exit 0
+
+spoolsize=`du -b -s "$spooldir" | awk '{print $1}'`
+spoolcount=`find "$spooldir" -type f -name 'M*.*' | wc -l`
+# Do not use globbing to keep the command line short!
+spoololdest="-1"
+toldest=`ls --time-style='+%s' -tlr "$spooldir" | grep 'Q' | awk '{print $6}'`
+[ -n "$toldest" ] && spoololdest="$toldest"
+flushmtime="-1"
+[ -f "$spooldir/flush" ] && flushmtime=`ls --time-style='+%s' -tlr "$spooldir/flush" | awk '{print $6}'`
+
+echo '<<<dma_spool>>>'
+echo "spooldir $spooldir"
+echo "spoolsize $spoolsize"
+echo "spoolcount $spoolcount"
+echo "spoololdest $spoololdest"
+echo "flushmtime $flushmtime"
+

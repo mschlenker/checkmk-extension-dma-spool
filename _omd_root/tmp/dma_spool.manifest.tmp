@@ -1,0 +1,13 @@
+{'author': 'Mattias Schlenker',
+ 'description': 'Check size, length and file age of the Dragonfly Mail Agent queue.',
+ 'download_url': 'https://example.com/dma_spool/',
+ 'files': {'cmk_addons_plugins': ['dma_spool/agent/dma_spool',
+                                  'dma_spool/agent_based/dma_spool_check.py',
+                                  'dma_spool/graphing/file_ages.py',
+                                  'dma_spool/rulesets/ruleset_dma_queue.py']},
+ 'name': 'dma_spool',
+ 'title': 'Dragonfly Mail Agent spool directory',
+ 'version': '0.1.0',
+ 'version.min_required': '2.4.0b1',
+ 'version.packaged': 'cmk-mkp-tool 3.0.0',
+ 'version.usable_until': None}
